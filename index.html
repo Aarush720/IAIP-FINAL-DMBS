@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Integrated Academic Insights Portal</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+      }
+    </script>
+
+    <script>
+      // Avoids FOUC (Flash of Unstyled Content) by setting theme class before React loads
+      if (localStorage.getItem('theme') === 'light') {
+        document.documentElement.classList.remove('dark');
+      } else {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,700;1,400;1,700&family=Montserrat:wght@400;700&family=Poppins:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        font-family: 'Montserrat', sans-serif;
+        background-color: #1c1917; /* Fallback dark background */
+        color: #FAF4F4;
+        margin: 0;
+        overflow-x: hidden;
+      }
+      html:not(.dark) body {
+        background-color: #f5f5f4; /* stone-100 */
+        color: #292524; /* stone-800 */
+      }
+
+      .font-heading {
+        font-family: 'Poppins', sans-serif;
+      }
+      .font-italic-accent {
+        font-family: 'Cormorant', serif;
+      }
+
+      /* Page transition for main content area */
+      @keyframes page-transition {
+        from {
+          opacity: 0;
+          transform: translateY(20px) scale(0.99);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0px) scale(1);
+        }
+      }
+      .animate-page-transition {
+        animation: page-transition 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+
+      /* Enhanced Welcome Animation */
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeOut {
+        from {
+          opacity: 1;
+        }
+        to {
+          opacity: 0;
+        }
+      }
+
+      @keyframes fadeOutUp {
+        from {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        to {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+      }
+
+      .animate-fade-in-up {
+        display: inline-block; /* Needed for transform */
+        animation: fadeInUp 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        opacity: 0;
+      }
+
+      .animate-fade-out {
+        animation: fadeOut 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+
+      .animate-fade-out-up {
+        display: inline-block; /* Needed for transform */
+        animation: fadeOutUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+
+      .delay-150 {
+        animation-delay: 150ms;
+      }
+      .delay-300 {
+        animation-delay: 300ms;
+      }
+      .delay-600 {
+        animation-delay: 600ms;
+      }
+
+      /* New fade-in for the login page */
+      @keyframes loginFadeIn {
+        from {
+          opacity: 0;
+          transform: scale(0.98);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      .animate-login-fade-in {
+        animation: loginFadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+
+      /* Print specific styles for Mark Sheet */
+      @media print {
+        body * {
+          visibility: hidden;
+        }
+        .printable-area,
+        .printable-area * {
+          visibility: visible;
+        }
+        .printable-area {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+        }
+      }
+    </style>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://aistudiocdn.com/react@^19.2.0",
+          "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+          "react/": "https://aistudiocdn.com/react@^19.2.0/",
+          "react-router-dom": "https://aistudiocdn.com/react-router-dom@^7.9.6",
+          "recharts": "https://aistudiocdn.com/recharts@^3.4.1"
+        }
+      }
+    </script>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/index.tsx"></script>
+  </body>
+</html>
