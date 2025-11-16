@@ -1,0 +1,5 @@
+{
+  "name": "Integrated Academic Insights Portal",
+  "description": "A comprehensive portal for managing and analyzing academic data, including students, faculty, courses, attendance, and assessments. Features a dashboard, detailed analytics, and administrative controls.",
+  "requestFramePermissions": []
+}

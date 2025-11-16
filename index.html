@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Integrated Academic Insights Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+      }
+    </script>
+    <script>
+      // Avoids FOUC (Flash of Unstyled Content) by setting theme class before React loads
+      if (localStorage.getItem('theme') === 'light') {
+        document.documentElement.classList.remove('dark');
+      } else {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,700;1,400;1,700&family=Montserrat:wght@400;700&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --particle-color: rgba(250, 244, 244, 0.6);
+        --particle-line-color-base: 207, 82, 86;
+      }
+      html:not(.dark) {
+        --particle-color: rgba(41, 37, 36, 0.7);
+      }
+
+      body {
+        font-family: 'Montserrat', sans-serif;
+        background-color: #1c1917; /* Fallback dark background */
+        color: #FAF4F4;
+        margin: 0;
+        overflow-x: hidden;
+      }
+      html:not(.dark) body {
+        background-color: #f5f5f4; /* stone-100 */
+        color: #292524; /* stone-800 */
+      }
+      #particle-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        background-color: #1c1917;
+      }
+      html:not(.dark) #particle-canvas {
+        background-color: #f5f5f4;
+      }
+
+      .font-heading {
+        font-family: 'Poppins', sans-serif;
+      }
+      .font-italic-accent {
+        font-family: 'Cormorant', serif;
+      }
+
+      /* Page transition for main content area */
+      @keyframes page-transition {
+        from {
+          opacity: 0;
+          transform: translateY(20px) scale(0.99);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0px) scale(1);
+        }
+      }
+      .animate-page-transition {
+        animation: page-transition 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+      
+      /* Enhanced Welcome Animation */
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeOut {
+          from { opacity: 1; }
+          to { opacity: 0; }
+      }
+
+      @keyframes fadeOutUp {
+          from {
+              opacity: 1;
+              transform: translateY(0);
+          }
+          to {
+              opacity: 0;
+              transform: translateY(-20px);
+          }
+      }
+
+      .animate-fade-in-up {
+        display: inline-block; /* Needed for transform */
+        animation: fadeInUp 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        opacity: 0;
+      }
+
+      .animate-fade-out {
+          animation: fadeOut 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+
+      .animate-fade-out-up {
+          display: inline-block; /* Needed for transform */
+          animation: fadeOutUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+
+      .delay-150 { animation-delay: 150ms; }
+      .delay-300 { animation-delay: 300ms; }
+      .delay-600 { animation-delay: 600ms; }
+
+
+      /* New fade-in for the login page */
+      @keyframes loginFadeIn {
+        from {
+            opacity: 0;
+            transform: scale(0.98);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+      }
+      .animate-login-fade-in {
+          animation: loginFadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+
+      /* Print specific styles for Mark Sheet */
+      @media print {
+        body * {
+          visibility: hidden;
+        }
+        .printable-area, .printable-area * {
+          visibility: visible;
+        }
+        .printable-area {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+        }
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react-router-dom": "https://aistudiocdn.com/react-router-dom@^7.9.5",
+    "recharts": "https://aistudiocdn.com/recharts@^3.4.1"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <canvas id="particle-canvas"></canvas>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+    <script>
+      const canvas = document.getElementById('particle-canvas');
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+      let mouse = { x: null, y: null, radius: 150 };
+
+      function getCssVariable(variable) {
+        return getComputedStyle(document.documentElement).getPropertyValue(variable).trim();
+      }
+
+      function setCanvasSize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      setCanvasSize();
+
+      window.addEventListener('resize', () => {
+        setCanvasSize();
+        init(); // Re-initialize particles on resize
+      });
+      window.addEventListener('mousemove', (event) => {
+        mouse.x = event.x;
+        mouse.y = event.y;
+      });
+      window.addEventListener('mouseout', () => {
+        mouse.x = null;
+        mouse.y = null;
+      });
+
+      class Particle {
+        constructor(x, y, directionX, directionY, size, color) {
+          this.x = x;
+          this.y = y;
+          this.directionX = directionX;
+          this.directionY = directionY;
+          this.size = size;
+          this.color = color;
+        }
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+          ctx.fillStyle = this.color;
+          ctx.fill();
+        }
+        update() {
+          if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
+          if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
+          this.x += this.directionX;
+          this.y += this.directionY;
+          this.draw();
+        }
+      }
+
+      function init() {
+        const particleColor = getCssVariable('--particle-color');
+        particles = [];
+        let numberOfParticles = (canvas.height * canvas.width) / 9000;
+        for (let i = 0; i < numberOfParticles; i++) {
+          let size = (Math.random() * 2) + 1;
+          let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+          let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+          let directionX = (Math.random() * .4) - .2;
+          let directionY = (Math.random() * .4) - .2;
+          particles.push(new Particle(x, y, directionX, directionY, size, particleColor));
+        }
+      }
+
+      function connect() {
+        const lineColorBase = getCssVariable('--particle-line-color-base');
+        let opacityValue = 1;
+        for (let a = 0; a < particles.length; a++) {
+          for (let b = a; b < particles.length; b++) {
+            let distance = ((particles[a].x - particles[b].x) * (particles[a].x - particles[b].x))
+              + ((particles[a].y - particles[b].y) * (particles[a].y - particles[b].y));
+            
+            if (distance < (canvas.width / 7) * (canvas.height / 7)) {
+              opacityValue = 1 - (distance / 20000);
+              ctx.strokeStyle = `rgba(${lineColorBase}, ${opacityValue})`;
+              ctx.lineWidth = 1;
+              ctx.beginPath();
+              ctx.moveTo(particles[a].x, particles[a].y);
+              ctx.lineTo(particles[b].x, particles[b].y);
+              ctx.stroke();
+            }
+          }
+        }
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+        ctx.clearRect(0, 0, innerWidth, innerHeight);
+        for (let i = 0; i < particles.length; i++) {
+          particles[i].update();
+        }
+        connect();
+      }
+
+      // Re-initialize particles when theme changes
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+            // Small delay to allow CSS variables to update
+            setTimeout(init, 50);
+          }
+        });
+      });
+      observer.observe(document.documentElement, { attributes: true });
+
+      init();
+      animate();
+    </script>
+  </body>
+</html>
