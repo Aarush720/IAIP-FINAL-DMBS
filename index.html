@@ -154,21 +154,21 @@
       }
     </style>
 
+    <base href="/" /> <!-- Add this line for proper routing -->
+
     <script type="importmap">
       {
         "imports": {
           "react": "https://aistudiocdn.com/react@^19.2.0",
-          "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-          "react/": "https://aistudiocdn.com/react@^19.2.0/",
+          "react-dom": "https://aistudiocdn.com/react-dom@^19.2.0/",
           "react-router-dom": "https://aistudiocdn.com/react-router-dom@^7.9.6",
           "recharts": "https://aistudiocdn.com/recharts@^3.4.1"
         }
       }
     </script>
   </head>
-
   <body>
-    <div id="root"></div>
+    <div id="root"></div> <!-- Ensure this div exists -->
     <script type="module" src="/src/index.tsx"></script>
   </body>
 </html>
